@@ -13,8 +13,8 @@ MAP = """
 #  o M    M              #   #
 #    MMM     MMMM   MMMMMM   #
 #         MMMM      M        #
-#            M  M   M   MMMM #
-#     MMMMMM    M       M x  #
+#            M  MMMMMMMMMMMM #
+#     MMMMMMMM  M       M x  #
 #        M      M            #
 ##############################
 """
@@ -97,8 +97,16 @@ class GameWalkPuzzle(SearchProblem):
 def main():
     problem = GameWalkPuzzle(MAP)
     result = astar(problem, graph_search=True)
-    path = [x[1] for x in result.path()]
+    print("A*")
+    displayResults(problem, result)
+    result = greedy(problem, graph_search=True)
+    print("Greedy")
+    displayResults(problem, result)
+
+
+def displayResults(problem, result):
     fullpath = result.path()
+    path = [x[1] for x in fullpath]
     for y in range(len(MAP)):
         for x in range(len(MAP[y])):
             if (x, y) == problem.initial:
@@ -106,10 +114,22 @@ def main():
             elif (x, y) == problem.goal:
                 print("x", end='')
             elif (x, y) in path:
-                print("·", end='')
+                if MAP[y][x] == "M":
+                    print("!", end='')
+                else:
+                    print("·", end='')
             else:
                 print(MAP[y][x], end='')
         print()
+    cost = sum(COSTS[x[0]] for x in fullpath[1:])
+    mountain_moves = 0
+    for x in fullpath[1:]:
+        if x[0].count("mountain"):
+            mountain_moves += 1
+
+    print("Total Cost: ", cost)
+    print("Mountain Moves: ", mountain_moves)
+    print("")
 
 
 if __name__ == "__main__":
