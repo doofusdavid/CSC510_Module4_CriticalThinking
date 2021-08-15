@@ -1,3 +1,6 @@
+from attempt import Attempt
+
+
 class N_Puzzle:
     def __init__(self, size):
         """ Initialize the puzzle size by the specified size,open and closed lists to empty """
@@ -33,14 +36,14 @@ class N_Puzzle:
         print("Enter the goal state matrix \n")
         goal = self.accept()
 
-        start = Node(start, 0, 0)
+        start = Attempt(start, 0, 0)
         start.fval = self.f(start, goal)
         """ Put the start node in the open list"""
         self.open.append(start)
         print("\n\n")
         while True:
             cur = self.open[0]
-            print("     👇")
+            print("  👇")
             for i in cur.data:
                 for j in i:
                     print(j, end=" ")

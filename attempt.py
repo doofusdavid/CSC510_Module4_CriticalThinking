@@ -16,7 +16,7 @@ class Attempt:
         for i in val_list:
             child = self.shuffle(self.data, x, y, i[0], i[1])
             if child is not None:
-                child_node = Node(child, self.level+1, 0)
+                child_node = Attempt(child, self.level+1, 0)
                 children.append(child_node)
         return children
 

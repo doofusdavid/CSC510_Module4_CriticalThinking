@@ -1,3 +1,5 @@
 from simpleai.search import SearchProblem, astar
 from n_puzzle import N_Puzzle
-from attempt import Attempt
+
+puz = N_Puzzle(3)
+puz.process()
