@@ -4,14 +4,14 @@
 from __future__ import print_function
 
 import math
-from simpleai.search import SearchProblem, astar
+from simpleai.search import SearchProblem, astar, greedy
 
 MAP = """
 ##############################
 #         M              #   #
 # MMMM    MMMMMMMM       #   #
-#  o #    M              #   #
-#    #MM     MMMM   MMMMMM   #
+#  o M    M              #   #
+#    MMM     MMMM   MMMMMM   #
 #         MMMM      M        #
 #            M  M   M   MMMM #
 #     MMMMMM    M       M x  #
@@ -33,10 +33,11 @@ COSTS = {
     "down mountain": 2.0,
     "left mountain": 2.0,
     "right mountain": 2.0,
-    "up left mountain": 10.0,
-    "up right mountain": 10.0,
-    "down left mountain": 10.0,
-    "down right mountain": 10.0
+    "right mountain": 2.0,
+    "up left mountain": 2.8,
+    "up right mountain": 2.8,
+    "down left mountain": 2.8,
+    "down right mountain": 2.8
 }
 
 
@@ -59,9 +60,9 @@ class GameWalkPuzzle(SearchProblem):
         for action in list(COSTS.keys()):
             newx, newy = self.result(state, action)
             if self.board[newy][newx] != "#":
-                if self.board[newy][newx] == "M" and action.count("mountain"):
+                if self.board[newy][newx] != "M" and action.count("mountain") == 0:
                     actions.append(action)
-                elif self.board[newy][newx] == " " and action.count("mountain") == 0:
+                if self.board[newy][newx] == "M" and action.count("mountain") > 0:
                     actions.append(action)
         return actions
 
@@ -89,15 +90,15 @@ class GameWalkPuzzle(SearchProblem):
     def heuristic(self, state):
         x, y = state
         gx, gy = self.goal
-        return abs(x-gx) + abs(y-gy)
-        # return math.sqrt((x - gx) ** 2 + (y - gy) ** 2)
+        # return abs(x-gx) + abs(y-gy)
+        return math.sqrt((x - gx) ** 2 + (y - gy) ** 2)
 
 
 def main():
     problem = GameWalkPuzzle(MAP)
     result = astar(problem, graph_search=True)
     path = [x[1] for x in result.path()]
-
+    fullpath = result.path()
     for y in range(len(MAP)):
         for x in range(len(MAP[y])):
             if (x, y) == problem.initial:
